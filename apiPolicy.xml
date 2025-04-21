@@ -1,0 +1,18 @@
+<policies>
+    <inbound>
+        <base />
+        <set-header name="Authorization" exists-action="override">
+            <value>Bearer {{openai-key}}</value>
+        </set-header>
+        <set-backend-service backend-id="openai-backend" />
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>

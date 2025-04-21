@@ -1,0 +1,47 @@
+# Infrastructure as Code - OpenAI with APIM
+
+This project sets up an OpenAI service with GPT-4o-mini deployment and exposes it through Azure API Management.
+
+## Deployment
+
+To deploy the infrastructure
+
+1) Ensure you have a target resource group already created
+
+2) Create a main.bicepparam file with the required params. You can clone main.bicepparam.example
+
+3) Run the following command:
+
+```bash
+az deployment group create \
+    --resource-group your-rg \
+    --template-file main.bicep \
+    --parameters main.bicepparam
+```
+
+4) You can start using the model. Example:
+
+```
+POST https://agustin-gabrielli-apim.azure-api.net/chat/deployments/gpt-4o-mini-deployment/chat/completions?api-version=2024-12-01-preview
+```
+
+Make sure you set the following headers:
+* api-key with the APIM subscription key
+* Content-Type to application/json
+
+The body of the request can be something like
+```json
+{
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a sarcastic, funny, hilarious assistant, that answers questions making jokes."
+        },
+        {
+            "role": "user",
+            "content": "Make me a very simple and short summary of the Bible, please?"
+        }
+    ]
+}
+```
+

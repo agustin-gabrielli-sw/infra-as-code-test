@@ -1,0 +1,42 @@
+# Azure CLI
+.azure/
+
+# Bicep
+*.bicep.param.json
+*.bicep.parameters.json
+*.bicepparam
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Azure credentials
+*.publishsettings
+*.pfx
+*.pem
+*.cer
+*.crt
+*.key
+
+# Local development
+local.settings.json
+*.user
+*.userosscache
+*.sln.docstates 
