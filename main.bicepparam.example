@@ -1,7 +1,0 @@
-using 'main.bicep'
-
-param environmentType = 'Dev'
-param openAiServiceName = 'name-of-openai-service'
-param apimServiceName = 'name-of-apim-service'
-param publisherName = 'Your Name'
-param publisherEmail = 'your.email@example.com'

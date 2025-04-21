@@ -4,7 +4,6 @@
 # Bicep
 *.bicep.param.json
 *.bicep.parameters.json
-*.bicepparam
 
 # IDE
 .vscode/

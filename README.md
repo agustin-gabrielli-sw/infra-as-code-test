@@ -4,11 +4,19 @@ This project sets up an OpenAI service with GPT-4o-mini deployment and exposes i
 
 ## Deployment
 
-To deploy the infrastructure
+## To deploy the infrastructure using a GitHub Actions workflow
+
+You must first configure the repo to be able to connect to Azure. For this, read, edit and execute the init.ps1 file.
+
+It just needs to be done the first time.
+
+## To deploy the infrastructure manually
+
+1) Complete the names in the init.ps1 file and run it
 
 1) Ensure you have a target resource group already created
 
-2) Create a main.bicepparam file with the required params. You can clone main.bicepparam.example
+2) Create a main.bicepparam file with the required params
 
 3) Run the following command:
 

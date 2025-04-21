@@ -5,11 +5,11 @@
 @description('The environment type')
 param environmentType string = 'Dev'
 
-@description('The name of the OpenAI service')
-param openAiServiceName string
+@description('The base name for the OpenAI service')
+param openAiServiceBaseName string
 
-@description('The name of the API Management service')
-param apimServiceName string
+@description('The base name for the API Management service')
+param apimServiceBaseName string
 
 @description('The publisher name for the API Management service')
 param publisherName string
@@ -19,6 +19,10 @@ param publisherEmail string
 
 @description('The location for all resources')
 param location string = resourceGroup().location
+
+var uniqueSuffix = uniqueString(resourceGroup().id)
+var openAiServiceName = '${openAiServiceBaseName}-${uniqueSuffix}'
+var apimServiceName = '${apimServiceBaseName}-${uniqueSuffix}'
 
 var environmentConfigurationMap = {
   Production: {
