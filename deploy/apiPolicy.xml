@@ -1,18 +1,71 @@
 <policies>
     <inbound>
         <base />
+
+		<!-- Initiate timer before forwarding the request to the backend-->
+		<set-variable name="startTime" value="@(DateTime.UtcNow)" />
+        
         <set-header name="Authorization" exists-action="override">
             <value>Bearer {{openai-key}}</value>
         </set-header>
         <set-backend-service backend-id="openai-backend" />
     </inbound>
+
     <backend>
         <base />
     </backend>
+
     <outbound>
         <base />
+
+        <!-- Parse response JSON body -->
+        <set-variable name="parsedBody" value="@((JObject)context.Response.Body.As<JObject>(true))" />
+
+        <!-- Extract token metrics from parsed JSON -->
+        <set-variable name="totalTokens" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["total_tokens"]) ?? 0).ToString())" />
+        <set-variable name="completionTokens" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["completion_tokens"]) ?? 0).ToString())" />
+        <set-variable name="llmPromptTokens" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["llm_prompt_tokens"]) ?? 0).ToString())" />
+        <set-variable name="userPromptTokens" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["user_prompt_tokens"]) ?? 0).ToString())" />
+        
+        <!-- Review if same as promptType -->
+        <set-variable name="promptFormat" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["prompt_format"]) ?? 0).ToString())" />
+        <set-variable name="promptId" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["prompt_id"]) ?? 0).ToString())" />
+        <set-variable name="completionsNumber" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["completions_number"]) ?? 0).ToString())" />
+        <!-- TODO: Continue adding metrics from here. Review metric for Size of prompts from use to copilot (bytes) -->
+        <!-- TODO: Continue adding metrics from here. Review metric for Size of completions per completion (Number of output tokens per request) -->
+		
+		<!-- Stop the timer and calculate duration -->
+		<set-variable name="endTime" value="@(DateTime.UtcNow)" />
+		<set-variable name="responseTimeMs" value="@(((DateTime)context.Variables["endTime"] - (DateTime)context.Variables["startTime"]).TotalMilliseconds.ToString("F0"))" />
+
+        <!-- Trace for diagnostics, captured by APIM logs -->
+        <trace source="Agus Test - SAS Copilot Telemetry Trace" severity="verbose">
+            <message>Telemetry capture</message>
+            <metadata name="customerID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Customer-ID", "unknown"))" />
+            <metadata name="siteNum" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Site-Num", "unknown"))" />
+            <metadata name="appName" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-App-Name", "unknown"))" />
+            <metadata name="viyaVersion" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Viya-Version", "unknown"))" />
+            <metadata name="copilotName" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Copilot-Name", "unknown"))" />
+            <metadata name="chatID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
+            <metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
+            <!-- TODO: Confirm if promptType is same as form that the prompt is presented to the customer as -->
+            <metadata name="promptType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" /> 
+
+            <!-- Review if same as promptType -->
+            <metadata name="promptFormat" value="@((string)context.Request.Headers.GetValueOrDefault("promptFormat", "unknown"))" />
+            <metadata name="promptID" value="@((string)context.Request.Headers.GetValueOrDefault("promptId", "unknown"))" />
+            <metadata name="totalTokens" value="@((string)context.Variables.GetValueOrDefault<string>("totalTokens"))" />
+            <metadata name="completionTokens" value="@((string)context.Variables.GetValueOrDefault<string>("completionTokens"))" />
+            <metadata name="llmPromptTokens" value="@((string)context.Variables.GetValueOrDefault<string>("llmPromptTokens"))" />
+            <metadata name="userPromptTokens" value="@((string)context.Variables.GetValueOrDefault<string>("userPromptTokens"))" />
+            <metadata name="completionsNumber" value="@((string)context.Variables.GetValueOrDefault<string>("completionsNumber"))" />
+			
+			<metadata name="responseTimeMs" value="@((string)context.Variables["responseTimeMs"])" />
+			<metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+        </trace>
     </outbound>
+
     <on-error>
         <base />
-    </on-error>
+    </on-error> 
 </policies>

@@ -27,10 +27,12 @@ az deployment group create \
     --parameters main.bicepparam
 ```
 
+NOTE: we can add --mode Complete -> deletes any resources in the resource group that aren't defined in the template
+
 4) You can start using the model. Example:
 
 ```
-POST https://agustin-gabrielli-apim.azure-api.net/chat/deployments/gpt-4o-mini-deployment/chat/completions?api-version=2024-12-01-preview
+POST https://agustin-gabrielli-apim-36ielriklvqjq.azure-api.net/openaitest/deployments/gpt-4o-mini-deployment/chat/completions?api-version=2024-12-01-preview
 ```
 
 Make sure you set the following headers:

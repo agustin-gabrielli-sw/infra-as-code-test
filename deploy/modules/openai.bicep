@@ -13,6 +13,9 @@ param location string = resourceGroup().location
 @description('The name of the GPT-4 deployment')
 param deploymentName string = 'gpt-4o-mini-deployment'
 
+@description('The Log Analytics Workspace ID for diagnostics')
+param lawId string = ''
+
 resource openAiService 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
   name: openAiServiceName
   location: location
@@ -21,6 +24,22 @@ resource openAiService 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
   properties: {
     customSubDomainName: openAiServiceName
     publicNetworkAccess: 'Enabled'
+  }
+}
+
+// Create a diagnostic setting to send OpenAI service logs to Log Analytics, if a Log Analytics Workspace ID is provided.
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if(lawId != '') {
+  name: '${openAiService.name}-diagnostics'
+  scope: openAiService
+  properties: {
+    workspaceId: lawId
+    logs: []
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
   }
 }
 
