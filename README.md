@@ -23,8 +23,8 @@ It just needs to be done the first time.
 ```bash
 az deployment group create \
     --resource-group your-rg \
-    --template-file main.bicep \
-    --parameters main.bicepparam
+    --template-file ./deploy/main.bicep \
+    --parameters ./deploy/main.bicepparam
 ```
 
 NOTE: we can add --mode Complete -> deletes any resources in the resource group that aren't defined in the template

@@ -72,7 +72,7 @@ resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2024-06-01-pre
   name: 'policy'
   parent: api
   properties: {
-    format: 'xml'
+    format: 'rawxml' // Must be rawxml so things like <, >, etc work
     value: loadTextContent('../apiPolicy.xml')
   }
   dependsOn: [namedValue]
