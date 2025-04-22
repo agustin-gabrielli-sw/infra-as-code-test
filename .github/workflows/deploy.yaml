@@ -27,4 +27,4 @@ jobs:
           --name deploy-infra-as-code-test-${{ github.run_number }} \
           --resource-group ${{ env.AZURE_RESOURCEGROUP_NAME }} \
           --template-file main.bicep \
-          --parameters @main.bicepparam
+          --parameters main.bicepparam
