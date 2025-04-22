@@ -64,7 +64,7 @@ resource api 'Microsoft.ApiManagement/service/apis@2024-06-01-preview' = {
     subscriptionRequired: true
     type: 'http'
     value: openAIAPISpecURL
-    path: 'chat'
+    path: 'openaitest'
   }
 }
 
