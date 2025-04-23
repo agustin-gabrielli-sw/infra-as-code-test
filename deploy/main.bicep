@@ -131,6 +131,9 @@ module apimOpenAiEndpoint 'modules/apim-openai-endpoint.bicep' = {
     apimServiceName: apimServiceName
     openAiServiceName: openAiServiceName
     openAIServiceEndpoint: openAiModule.outputs.endpoint
+    appInsightsInstrumentationKey: appInsightsModule.outputs.instrumentationKey
+    appInsightsId: appInsightsModule.outputs.id
+    apimLoggerName: apimLoggerName
   }
   dependsOn: [
     apim
