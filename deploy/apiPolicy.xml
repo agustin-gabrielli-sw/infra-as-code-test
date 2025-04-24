@@ -40,6 +40,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+            <metadata name="operation_Id" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
             <!-- TODO: add modelVersion or modelDeploymentID -->
 
 			<metadata name="metricName" value="totalTokens" />
@@ -56,6 +57,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+            <metadata name="operation_Id" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
             <!-- TODO: add modelVersion or modelDeploymentID -->
 
 			<metadata name="metricName" value="completionTokens" />
@@ -72,6 +74,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+            <metadata name="operation_Id" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
             <!-- TODO: add modelVersion or modelDeploymentID -->
 
 			<metadata name="metricName" value="promptTokens" />
@@ -88,6 +91,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+            <metadata name="operation_Id" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
             <!-- TODO: add modelVersion or modelDeploymentID -->
 
             <metadata name="metricName" value="responseTimeMs" />
@@ -104,6 +108,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+            <metadata name="operation_Id" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
             <!-- TODO: add modelVersion or modelDeploymentID -->
 
 			<metadata name="metricName" value="completionsCount" />
@@ -120,6 +125,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+            <metadata name="operation_Id" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
             <!-- TODO: add modelVersion or modelDeploymentID -->
 
 			<metadata name="metricName" value="platformAPICallCount" />
@@ -136,6 +142,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+            <metadata name="operation_Id" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
             <!-- TODO: add modelVersion or modelDeploymentID -->
 
 			<metadata name="metricName" value="copilotAPICallCount" />
@@ -152,6 +159,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+            <metadata name="operation_Id" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
             <!-- TODO: add modelVersion or modelDeploymentID -->
 
 			<metadata name="metricName" value="docCopilotRAGCallCount" />
