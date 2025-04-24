@@ -1,5 +1,5 @@
-name: deploy-infra-as-code-test
-concurrency: deploy-infra-as-code-test # This is used to prevent concurrent runs of the same workflow
+name: cicd-infra-as-code-test
+concurrency: cicd-infra-as-code-test # This is used to prevent concurrent runs of the same workflow
 
 on: 
   push:
@@ -17,8 +17,37 @@ env:
     AZURE_RESOURCEGROUP_NAME: agustin-gabrielli-rg
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run Bicep linter
+      run: az bicep build --file ./deploy/main.bicep
+
+
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: azure/login@v1
+      name: Sign in to Azure
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - name: Run preflight validation
+      run: |
+        # Temporary fix for bicep CLI bug in latest az cli version
+        az config set bicep.use_binary_from_path=false
+        az deployment group validate \
+          --name deploy-infra-as-code-test-${{ github.run_number }} \
+          --resource-group ${{ env.AZURE_RESOURCEGROUP_NAME }} \
+          --template-file ./deploy/main.bicep \
+          --parameters ./deploy/main.bicepparam
+
   deploy:
     runs-on: ubuntu-latest
+    needs: [lint, validate]
     steps:
     - uses: actions/checkout@v3 # Checkout (get the code) from the repo to the runner
     - uses: azure/login@v1 # Login to Azure using the service principal
