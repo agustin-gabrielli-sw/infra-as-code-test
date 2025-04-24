@@ -1,7 +1,6 @@
 <policies>
     <inbound>
         <base />
-
         <!-- Initiate timer before forwarding the request to the backend-->
 		<set-variable name="startTime" value="@(DateTime.UtcNow)" />
         
@@ -10,14 +9,11 @@
         </set-header>
         <set-backend-service backend-id="openai-backend" />
     </inbound>
-
     <backend>
         <base />
     </backend>
-
     <outbound>
 		<base />
-		
 		<!-- Parse response JSON body -->
 		<set-variable name="parsedBody" value="@((JObject)context.Response.Body.As<JObject>(true))" />
 
