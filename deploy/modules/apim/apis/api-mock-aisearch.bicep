@@ -37,7 +37,7 @@ resource api 'Microsoft.ApiManagement/service/apis@2022-08-01' = {
 }
 
 resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2022-08-01' = {
-  name: 'mockaisearchpolicy'
+  name: 'policy'
   parent: api
   properties: {
     value: loadTextContent('./policies/aisearch-policy.xml')

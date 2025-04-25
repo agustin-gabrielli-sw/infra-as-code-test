@@ -3,11 +3,6 @@
         <base />
         <!-- Initiate timer before forwarding the request to the backend-->
 		<set-variable name="startTime" value="@(DateTime.UtcNow)" />
-        
-        <set-header name="Authorization" exists-action="override">
-            <value>Bearer {{openai-key}}</value>
-        </set-header>
-        <set-backend-service backend-id="openai-backend" />
     </inbound>
     <backend>
         <base />
