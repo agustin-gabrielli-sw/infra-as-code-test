@@ -40,6 +40,10 @@ resource api 'Microsoft.ApiManagement/service/apis@2022-08-01' = {
     protocols: [
       'https'
     ]
+    subscriptionKeyParameterNames: {
+      header: 'api-key'
+      query: 'api-key'
+    }
     subscriptionRequired: subscriptionRequired
     apiType: 'http'
   }
