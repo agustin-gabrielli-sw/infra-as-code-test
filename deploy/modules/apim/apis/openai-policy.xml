@@ -21,7 +21,7 @@
 		<set-variable name="totalTokens" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["total_tokens"]) ?? 0).ToString())" />
 		<set-variable name="completionTokens" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["completion_tokens"]) ?? 0).ToString())" />
 		<set-variable name="promptTokens" value="@((((int?)((JObject)context.Variables["parsedBody"])["usage"]?["prompt_tokens"]) ?? 0).ToString())" />
-		
+		<set-variable name="modelVersion" value="@((((JObject)context.Variables["parsedBody"])["model"]?.ToString() ?? "unknown"))" />
 		<!-- Stop the timer and calculate duration -->
 		<set-variable name="endTime" value="@((DateTime.UtcNow))" />
 		<set-variable name="responseTimeMs" value="@((((int)((DateTime)context.Variables["endTime"] - (DateTime)context.Variables["startTime"]).TotalMilliseconds)).ToString())" />
@@ -36,7 +36,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
-            <!-- TODO: add modelVersion or modelDeploymentID -->
+            <metadata name="modelVersion" value="@((string)context.Variables.GetValueOrDefault("modelVersion"))" />
 
 			<metadata name="metricName" value="totalTokens" />
 			<metadata name="metricValue" value="@((string)context.Variables.GetValueOrDefault<string>("totalTokens"))" />
@@ -52,7 +52,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
-            <!-- TODO: add modelVersion or modelDeploymentID -->
+            <metadata name="modelVersion" value="@((string)context.Variables.GetValueOrDefault("modelVersion"))" />
 
 			<metadata name="metricName" value="completionTokens" />
 			<metadata name="metricValue" value="@((string)context.Variables.GetValueOrDefault<string>("completionTokens"))" />
@@ -68,7 +68,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
-            <!-- TODO: add modelVersion or modelDeploymentID -->
+            <metadata name="modelVersion" value="@((string)context.Variables.GetValueOrDefault("modelVersion"))" />
 
 			<metadata name="metricName" value="promptTokens" />
 			<metadata name="metricValue" value="@((string)context.Variables.GetValueOrDefault<string>("promptTokens"))" />
@@ -84,7 +84,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
-            <!-- TODO: add modelVersion or modelDeploymentID -->
+            <metadata name="modelVersion" value="@((string)context.Variables.GetValueOrDefault("modelVersion"))" />
 
             <metadata name="metricName" value="responseTimeMs" />
 			<metadata name="metricValue" value="@((string)context.Variables["responseTimeMs"])" />
@@ -100,7 +100,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
-            <!-- TODO: add modelVersion or modelDeploymentID -->
+            <metadata name="modelVersion" value="@((string)context.Variables.GetValueOrDefault("modelVersion"))" />
 
 			<metadata name="metricName" value="completionsCount" />
 			<metadata name="metricValue" value="1" />
@@ -116,7 +116,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
-            <!-- TODO: add modelVersion or modelDeploymentID -->
+            <metadata name="modelVersion" value="@((string)context.Variables.GetValueOrDefault("modelVersion"))" />
 
 			<metadata name="metricName" value="platformAPICallCount" />
 			<metadata name="metricValue" value="1" />
@@ -132,7 +132,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
-            <!-- TODO: add modelVersion or modelDeploymentID -->
+            <metadata name="modelVersion" value="@((string)context.Variables.GetValueOrDefault("modelVersion"))" />
 
 			<metadata name="metricName" value="copilotAPICallCount" />
 			<metadata name="metricValue" value="1" />
@@ -148,7 +148,7 @@
 			<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
 			<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
             <metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
-            <!-- TODO: add modelVersion or modelDeploymentID -->
+            <metadata name="modelVersion" value="@((string)context.Variables.GetValueOrDefault("modelVersion"))" />
 
 			<metadata name="metricName" value="docCopilotRAGCallCount" />
 			<metadata name="metricValue" value="1" />

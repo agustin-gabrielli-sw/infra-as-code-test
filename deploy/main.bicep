@@ -78,7 +78,7 @@ var environmentConfigurationMap = {
 }
 
 // 1. Log Analytics Workspace
-module logAnalyticsWorkspaceModule './modules/log-analytics-workspace.bicep' = {
+module logAnalyticsWorkspaceModule './modules/app-insights/log-analytics-workspace.bicep' = {
   name: 'logAnalyticsWorkspaceModule'
   params: {
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
@@ -87,7 +87,7 @@ module logAnalyticsWorkspaceModule './modules/log-analytics-workspace.bicep' = {
 }
 
 // 2. Application Insights
-module appInsightsModule './modules/app-insights.bicep' = {
+module appInsightsModule './modules/app-insights/app-insights.bicep' = {
   name: 'appInsightsModule'
   params: {
     applicationInsightsName: applicationInsightsName
@@ -97,7 +97,7 @@ module appInsightsModule './modules/app-insights.bicep' = {
 }
 
 // 3. OpenAI service + Deployment
-module openAiModule 'modules/openai.bicep' = {
+module openAiModule 'modules/ai-services/openai.bicep' = {
   name: 'openAiModule'
   params: {
     environmentConfigurationMap: environmentConfigurationMap
@@ -109,7 +109,7 @@ module openAiModule 'modules/openai.bicep' = {
 }
 
 // 4. API Management + Connection to App Insights (logger)
-module apim 'modules/apim.bicep' = {
+module apim 'modules/apim/apim.bicep' = {
   name: 'apimModule'
   params: {
     environmentConfigurationMap: environmentConfigurationMap
@@ -125,7 +125,7 @@ module apim 'modules/apim.bicep' = {
 }
 
 // 5. APIM OpenAI Endpoint
-module apimOpenAiEndpoint 'modules/apim-openai-endpoint.bicep' = {
+module apimOpenAiEndpoint 'modules/apim/apis/api-openai.bicep' = {
   name: 'apimOpenAiEndpointModule'
   params: {
     apimServiceName: apimServiceName
