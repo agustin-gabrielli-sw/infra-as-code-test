@@ -151,7 +151,6 @@ module apimMockAiSearchEndpoint 'modules/apim/apis/api-mock-aisearch.bicep' = {
     wiremockUrl: mockApiAiSearchUrl
     apiDisplayName: 'Mock AI Search API'
     apiDescription: 'API that connects to a WireMock instance for AI Search'
-    apiVersion: 'v1'
     subscriptionRequired: false
   }
   dependsOn: [
