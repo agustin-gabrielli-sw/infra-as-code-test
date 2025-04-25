@@ -82,7 +82,7 @@ resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2024-06-01-pre
   parent: api
   properties: {
     format: 'rawxml' // Must be rawxml so things like <, >, etc work
-    value: loadTextContent('openai-policy.xml')
+    value: loadTextContent('./policies/openai-policy.xml')
   }
   dependsOn: [namedValue]
 }
