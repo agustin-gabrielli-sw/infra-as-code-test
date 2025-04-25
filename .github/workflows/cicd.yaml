@@ -85,4 +85,5 @@ jobs:
           --name deploy-infra-as-code-test-${{ github.run_number }} \
           --resource-group ${{ env.AZURE_RESOURCEGROUP_NAME }} \
           --template-file ./deploy/main.bicep \
-          --parameters ./deploy/main.bicepparam
+          --parameters ./deploy/main.bicepparam \
+          --parameters mockApiAiSearchUrl=${{ secrets.MOCK_API_AI_SEARCH_URL }}

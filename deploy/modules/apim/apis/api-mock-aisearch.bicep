@@ -13,9 +13,6 @@ param apiDescription string = 'API that connects to a WireMock instance for AI S
 @description('The version of the API')
 param apiVersion string = 'v1'
 
-@description('The version set ID for the API')
-param apiVersionSetId string
-
 @description('The URL of the WireMock instance')
 param wiremockUrl string
 
@@ -39,7 +36,6 @@ resource api 'Microsoft.ApiManagement/service/apis@2022-08-01' = {
     ]
     subscriptionRequired: subscriptionRequired
     apiVersion: apiVersion
-    apiVersionSetId: apiVersionSetId
     apiType: 'http'
   }
 }

@@ -29,6 +29,9 @@ param publisherEmail string
 @description('The location for all resources')
 param location string = resourceGroup().location
 
+@description('The WireMock URL')
+param mockApiAiSearchUrl string
+
 var uniqueSuffix = uniqueString(resourceGroup().id)
 var openAiServiceName = '${openAiServiceBaseName}-${uniqueSuffix}'
 var apimServiceName = '${apimServiceBaseName}-${uniqueSuffix}'
@@ -134,6 +137,22 @@ module apimOpenAiEndpoint 'modules/apim/apis/api-openai.bicep' = {
     appInsightsInstrumentationKey: appInsightsModule.outputs.instrumentationKey
     appInsightsId: appInsightsModule.outputs.id
     apimLoggerName: apimLoggerName
+  }
+  dependsOn: [
+    apim
+  ]
+}
+
+// 6. APIM Mock AI Search Endpoint
+module apimMockAiSearchEndpoint 'modules/apim/apis/api-mock-aisearch.bicep' = {
+  name: 'apimMockAiSearchEndpointModule'
+  params: {
+    apimServiceName: apimServiceName
+    wiremockUrl: mockApiAiSearchUrl
+    apiDisplayName: 'Mock AI Search API'
+    apiDescription: 'API that connects to a WireMock instance for AI Search'
+    apiVersion: 'v1'
+    subscriptionRequired: false
   }
   dependsOn: [
     apim

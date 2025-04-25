@@ -14,13 +14,20 @@ $githubRepositoryName = 'infra-as-code-test'
 $applicationRegistration = New-AzADApplication -DisplayName 'infra-as-code-test-workflow'
 
 # Add a federated identity credential to the App Registration, so GitHub Actions can authenticate as that app without a client secret
+# We need to add two credentials, one for the main branch (for jobs that do not use the Production environment) and one for the Production environment (used in the deploy job)
+New-AzADAppFederatedCredential `
+   -Name 'infra-as-code-test-workflow-branch-main' `
+   -ApplicationObjectId $applicationRegistration.Id `
+   -Issuer 'https://token.actions.githubusercontent.com' `
+   -Audience 'api://AzureADTokenExchange' `
+   -Subject "repo:$($githubOrganizationName)/$($githubRepositoryName):ref:refs/heads/main"
+
 New-AzADAppFederatedCredential `
    -Name 'infra-as-code-test-workflow-production' `
    -ApplicationObjectId $applicationRegistration.Id `
    -Issuer 'https://token.actions.githubusercontent.com' `
    -Audience 'api://AzureADTokenExchange' `
    -Subject "repo:$($githubOrganizationName)/$($githubRepositoryName):environment:Production"
-   # -Subject "repo:$($githubOrganizationName)/$($githubRepositoryName):ref:refs/heads/main" # Use this if you just want to deploy from the main branch instead of the Production environment
 
 # 4) Get your existing target resource group
 $resourceGroup = Get-AzResourceGroup -Name agustin-gabrielli-rg
