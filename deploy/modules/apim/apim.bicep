@@ -29,6 +29,9 @@ resource apimService 'Microsoft.ApiManagement/service@2024-06-01-preview' = {
   name: apimServiceName
   location: location
   sku: environmentConfigurationMap[environmentType].apiManagement.sku
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     publisherName: publisherName
     publisherEmail: publisherEmail
@@ -55,3 +58,4 @@ resource apimLogger 'Microsoft.ApiManagement/service/loggers@2021-12-01-preview'
 
 output apimServiceName string = apimService.name
 output gatewayUrl string = apimService.properties.gatewayUrl 
+output principalId string = apimService.identity.principalId

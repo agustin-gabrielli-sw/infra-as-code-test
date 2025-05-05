@@ -16,7 +16,7 @@ resource serverlessEndpoint 'Microsoft.MachineLearningServices/workspaces/server
   }
   location: location
   properties: {
-    authMode: 'Key'
+    authMode: 'AAD'
     contentSafety: {
       contentSafetyLevel: 'Deferred'
       contentSafetyStatus: 'Enabled'
@@ -26,6 +26,6 @@ resource serverlessEndpoint 'Microsoft.MachineLearningServices/workspaces/server
     }
   }
 }
- 
+
 output endpointId string = serverlessEndpoint.name
 output modelUrl string = serverlessEndpoint.properties.inferenceEndpoint.uri

@@ -17,6 +17,13 @@ param keyVaultId string
 @description('Resource ID of Storage Account instance')
 param storageAccountId string 
 
+@description('Resource ID of APIM Principal ID')
+param apimPrincipalId string
+
+var azureRoles = loadJsonContent('../../../azure-roles.json')
+var azureAIDeveloperRole = resourceId('Microsoft.Authorization/roleDefinitions', azureRoles.AzureAIDeveloper)
+
+
 resource mlStudio 'Microsoft.MachineLearningServices/workspaces@2024-10-01' = {
   name: name
   location: location
@@ -34,6 +41,16 @@ resource mlStudio 'Microsoft.MachineLearningServices/workspaces@2024-10-01' = {
 
     publicNetworkAccess: 'Enabled' // TODO: maybe change to Disabled when ready for production
     hbiWorkspace: false
+  }
+}
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: mlStudio
+  name: guid(subscription().id, resourceGroup().id, mlStudio.name, 'ml-studio-role-assignment')
+  properties: {
+    roleDefinitionId: azureAIDeveloperRole
+    principalId: apimPrincipalId
+    principalType: 'ServicePrincipal'
   }
 }
 

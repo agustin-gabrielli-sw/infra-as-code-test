@@ -158,6 +158,22 @@ module appInsightsModule './modules/app-insights/app-insights.bicep' = {
   }
 }
 
+// API Management + Connection to App Insights (logger)
+module apim 'modules/apim/apim.bicep' = {
+  name: 'apimModule'
+  params: {
+    environmentConfigurationMap: environmentConfigurationMap
+    environmentType: environmentType
+    apimServiceName: apimServiceName
+    location: location
+    publisherName: publisherName
+    publisherEmail: publisherEmail
+    appInsightsInstrumentationKey: appInsightsModule.outputs.instrumentationKey
+    appInsightsId: appInsightsModule.outputs.id
+    apimLoggerName: apimLoggerName
+  }
+}
+
 // OpenAI service + Deployment
 module openAiModule 'modules/ai-services/openai.bicep' = {
   name: 'openAiModule'
@@ -177,6 +193,7 @@ module mlStudioModule './modules/ml-studio/ml-studio.bicep' = {
     // Workspace info
     location: 'eastus2' // Allows to deploy serverless endpoints for models from the model catalog
     name: mlStudioName
+    apimPrincipalId: apim.outputs.principalId
 
     // dependencies
     appInsightsId: appInsightsModule.outputs.id
@@ -193,22 +210,6 @@ module mlModelModule './modules/ml-studio/ml-model.bicep' = {
     location: mlStudioModule.outputs.location
     modelId: modelId
     endpointName: mlModelEndpointName
-  }
-}
-
-// API Management + Connection to App Insights (logger)
-module apim 'modules/apim/apim.bicep' = {
-  name: 'apimModule'
-  params: {
-    environmentConfigurationMap: environmentConfigurationMap
-    environmentType: environmentType
-    apimServiceName: apimServiceName
-    location: location
-    publisherName: publisherName
-    publisherEmail: publisherEmail
-    appInsightsInstrumentationKey: appInsightsModule.outputs.instrumentationKey
-    appInsightsId: appInsightsModule.outputs.id
-    apimLoggerName: apimLoggerName
   }
 }
 
@@ -258,8 +259,5 @@ module apimMLModelEndpoint 'modules/apim/apis/api-ml-model.bicep' = {
     appInsightsId: appInsightsModule.outputs.id
     apimLoggerName: apimLoggerName
   }
-  dependsOn: [
-    apim
-  ]
 }
 

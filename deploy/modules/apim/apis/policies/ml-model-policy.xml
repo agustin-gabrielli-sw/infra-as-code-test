@@ -5,8 +5,10 @@
         <set-variable name="startTime" value="@(DateTime.UtcNow)" />
         
         <!-- Use API key authentication -->
+        <authentication-managed-identity resource="https://ml.azure.com"
+            output-token-variable-name="managed-id-access-token" ignore-error="false" />
         <set-header name="Authorization" exists-action="override">
-            <value>Bearer {{ml-model-key}}</value>
+            <value>@("Bearer " + (string)context.Variables["managed-id-access-token"])</value>
         </set-header>
         <set-backend-service backend-id="ml-model-backend" />
     </inbound>
