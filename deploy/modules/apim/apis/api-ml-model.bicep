@@ -5,12 +5,6 @@
 @description('The name of the API Management service')
 param apimServiceName string
 
-@description('The ML workspace name')
-param mlWorkspaceName string
-
-@description('The ML endpoint name')
-param mlEndpointName string
-
 @description('The name of the API')
 param apiName string = 'ml-model-chat'
 
@@ -34,19 +28,6 @@ param mlEndpointUrl string
 
 resource apimService 'Microsoft.ApiManagement/service@2024-06-01-preview' existing = {
   name: apimServiceName
-}
-
-resource namedValue 'Microsoft.ApiManagement/service/namedValues@2024-06-01-preview' = {
-  name: 'ml-model-key'
-  parent: apimService
-  properties: {
-    displayName: 'ml-model-key' // This is the name that should be as a placeholder in the apiPolicy.xml file
-    value: listKeys(
-      resourceId('Microsoft.MachineLearningServices/workspaces/serverlessEndpoints', mlWorkspaceName, mlEndpointName),
-      '2024-10-01'
-    ).primaryKey
-    secret: true
-  }
 }
 
 // Create a basic OpenAPI specification for the chat completions endpoint
@@ -89,9 +70,6 @@ resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2024-06-01-pre
     format: 'rawxml'
     value: loadTextContent('./policies/ml-model-policy.xml')
   }
-  dependsOn: [
-    namedValue
-  ]
 }
 
 // This is the backend that can be used to access the ML API through APIM

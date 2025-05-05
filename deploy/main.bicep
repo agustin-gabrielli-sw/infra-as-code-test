@@ -252,8 +252,6 @@ module apimMLModelEndpoint 'modules/apim/apis/api-ml-model.bicep' = {
   name: 'apimMLModelEndpointModule'
   params: {
     apimServiceName: apimServiceName
-    mlWorkspaceName: mlStudioName
-    mlEndpointName: mlModelModule.outputs.endpointId
     mlEndpointUrl: mlModelModule.outputs.modelUrl
     appInsightsInstrumentationKey: appInsightsModule.outputs.instrumentationKey
     appInsightsId: appInsightsModule.outputs.id
