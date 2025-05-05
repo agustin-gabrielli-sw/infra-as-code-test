@@ -2,21 +2,13 @@
     <inbound>
         <base />
         <set-variable name="startTime" value="@((DateTime.UtcNow))" />
-        <authentication-managed-identity resource="https://search.azure.com/" />
-        <set-header name="Content-Type" exists-action="override">
-            <value>application/json</value>
-        </set-header>
+        <set-variable name="isSemanticQuery" value="@((context.Request.Body.As<JObject>(true)?["queryType"]?.ToString() ?? string.Empty).ToLower() == "semantic")" />
     </inbound>
     <backend>
-        <forward-request />
+        <base />
     </backend>
     <outbound>
         <base />
-        <set-variable name="parsedBody" value="@((JObject)context.Response.Body.As<JObject>(true))" />
-
-		<!-- Extract search metrics from parsed JSON -->
-		<set-variable name="resultCount" value="@(((int?)((JArray)((JObject)context.Variables["parsedBody"])["value"])?.Count ?? 0).ToString())" />
-
 		<!-- Stop the timer and calculate duration -->
         <set-variable name="endTime" value="@((DateTime.UtcNow))" />
         <set-variable name="responseTimeMs" value="@((((int)((DateTime)context.Variables["endTime"] - (DateTime)context.Variables["startTime"]).TotalMilliseconds)).ToString())" />
@@ -80,6 +72,26 @@
 			<metadata name="metricName" value="docCopilotRAGCallCount" />
 			<metadata name="metricValue" value="1" />
 		</trace>
+
+		<!-- Log semantic ranking count only if the query uses semantic ranking -->
+		<choose>
+			<when condition="@(context.Variables.GetValueOrDefault<bool>("isSemanticQuery"))">
+				<trace source="Semantic Ranking Count Trace" severity="verbose">
+					<message>Semantic Ranking Count</message>
+					<metadata name="copilotName" value="@((string)context.Request.OriginalUrl.Path.Split('/').ElementAtOrDefault(2) ?? "unknown")" />
+					<metadata name="siteNum" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Site-Num", "unknown"))" />
+					<metadata name="appName" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-App-Name", "unknown"))" />
+					<metadata name="viyaVersion" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Viya-Version", "unknown"))" />
+					<metadata name="chatID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Chat-ID", "unknown"))" />
+					<metadata name="messageID" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-ID", "unknown"))" />
+					<metadata name="messageType" value="@((string)context.Request.Headers.GetValueOrDefault("X-SAS-Message-Type", "unknown"))" />
+					<metadata name="requestPath" value="@((string)context.Request.OriginalUrl.Path)" />
+		
+					<metadata name="metricName" value="semanticCount" />
+					<metadata name="metricValue" value="1" />
+				</trace>
+			</when>
+		</choose>
     </outbound>
     <on-error>
         <base />

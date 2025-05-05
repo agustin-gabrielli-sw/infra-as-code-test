@@ -36,7 +36,9 @@ POST https://agustin-gabrielli-apim-36ielriklvqjq.azure-api.net/openaitest/deplo
 ```
 
 Make sure you set the following headers:
-* api-key with the APIM subscription key
+* "api-key" with the APIM subscription key (without "Bearer")
+  * you can use the key for the hole APIM instance (not recommended in prod)
+  * or you can use the key for each specific API (since here we create a specific subscription for each API)
 * Content-Type to application/json
 
 The body of the request can be something like

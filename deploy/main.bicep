@@ -32,15 +32,44 @@ param location string = resourceGroup().location
 @description('The WireMock URL')
 param mockApiAiSearchUrl string
 
+@description('The base name for the ML Studio workspace')
+param mlStudioBaseName string
+
+@description('The model ID for the ML Studio model used from the model catalog')
+param modelId string = 'azureml://registries/azureml/models/Phi-3-mini-4k-instruct' // Do not include the version when copying the Model ID
+
+@description('The base name for the ML Studio model endpoint')
+param mlModelEndpointBaseName string = 'ml-model-endpoint'
+
+@description('The base name for the storage account')
+param storageAccountBaseName string
+
+@description('The base name for the key vault')
+param keyVaultBaseName string
+
 var uniqueSuffix = uniqueString(resourceGroup().id)
 var openAiServiceName = '${openAiServiceBaseName}-${uniqueSuffix}'
 var apimServiceName = '${apimServiceBaseName}-${uniqueSuffix}'
 var logAnalyticsWorkspaceName = '${logAnalyticsWorkspaceBaseName}-${uniqueSuffix}'
 var applicationInsightsName = '${applicationInsightsBaseName}-${uniqueSuffix}'
 var apimLoggerName = '${apimLoggerBaseName}-${uniqueSuffix}'
+var mlStudioName = '${mlStudioBaseName}-${uniqueSuffix}'
+var mlModelEndpointName = '${mlModelEndpointBaseName}-${uniqueSuffix}'
+var storageAccountName = '${storageAccountBaseName}${uniqueSuffix}'
+var keyVaultName = '${keyVaultBaseName}-${uniqueSuffix}'
 
 var environmentConfigurationMap = {
   Production: {
+    storage: {
+      sku: {
+        name: 'Standard_LRS'
+      }
+    }
+    keyVault: {
+      sku: {
+        name: 'standard'
+      }
+    }
     openAI: {
       sku: {
         name: 'S0'
@@ -60,6 +89,16 @@ var environmentConfigurationMap = {
     }
   }
   Dev: {
+    storage: {
+      sku: {
+        name: 'Standard_LRS'
+      }
+    }
+    keyVault: {
+      sku: {
+        name: 'standard'
+      }
+    }
     openAI: {
       sku: {
         name: 'S0'
@@ -77,6 +116,25 @@ var environmentConfigurationMap = {
         capacity: 1
       }
     }
+  }
+}
+
+// 0. Storage Account
+module storageModule './modules/storage/storage.bicep' = {
+  name: 'storageModule'
+  params: {
+    location: location
+    name: storageAccountName
+    sku: environmentConfigurationMap[environmentType].storage.sku.name
+  }
+}
+
+module keyVaultModule './modules/key-vault/key-vault.bicep' = {
+  name: 'keyvaultModule'
+  params: {
+    location: location
+    name: keyVaultName
+    sku: environmentConfigurationMap[environmentType].keyVault.sku.name
   }
 }
 
@@ -111,7 +169,33 @@ module openAiModule 'modules/ai-services/openai.bicep' = {
   }
 }
 
-// 4. API Management + Connection to App Insights (logger)
+// 4. ML Studio
+module mlStudioModule './modules/ml-studio/ml-studio.bicep' = {
+  name: 'mlStudioModule'
+  params: {
+    // Workspace info
+    location: 'eastus2' // Allows to deploy serverless endpoints for models from the model catalog
+    name: mlStudioName
+
+    // dependencies
+    appInsightsId: appInsightsModule.outputs.id
+    keyVaultId: keyVaultModule.outputs.keyVaultId
+    storageAccountId: storageModule.outputs.accountId
+  }
+}
+
+// Create an ML model in the ML workspace and add an API in the existing APIM that connects to the model (with a /chat/completions operation), using a serverless endpoint with API key auth
+module mlModelModule './modules/ml-studio/ml-model.bicep' = {
+  name: 'mlModelModule'
+  params: {
+    mlWorkspaceName: mlStudioName
+    location: mlStudioModule.outputs.location
+    modelId: modelId
+    endpointName: mlModelEndpointName
+  }
+}
+
+// 5. API Management + Connection to App Insights (logger)
 module apim 'modules/apim/apim.bicep' = {
   name: 'apimModule'
   params: {
@@ -127,7 +211,7 @@ module apim 'modules/apim/apim.bicep' = {
   }
 }
 
-// 5. APIM OpenAI Endpoint
+// 6. APIM OpenAI Endpoint
 module apimOpenAiEndpoint 'modules/apim/apis/api-openai.bicep' = {
   name: 'apimOpenAiEndpointModule'
   params: {
@@ -143,7 +227,7 @@ module apimOpenAiEndpoint 'modules/apim/apis/api-openai.bicep' = {
   ]
 }
 
-// 6. APIM Mock AI Search Endpoint
+// 7. APIM Mock AI Search Endpoint
 module apimMockAiSearchEndpoint 'modules/apim/apis/api-mock-aisearch.bicep' = {
   name: 'apimMockAiSearchEndpointModule'
   params: {
@@ -160,3 +244,21 @@ module apimMockAiSearchEndpoint 'modules/apim/apis/api-mock-aisearch.bicep' = {
     apim
   ]
 }
+
+// 8. APIM ML Model Endpoint
+module apimMLModelEndpoint 'modules/apim/apis/api-ml-model.bicep' = {
+  name: 'apimMLModelEndpointModule'
+  params: {
+    apimServiceName: apimServiceName
+    mlWorkspaceName: mlStudioName
+    mlEndpointName: mlModelModule.outputs.endpointId
+    mlEndpointUrl: mlModelModule.outputs.modelUrl
+    appInsightsInstrumentationKey: appInsightsModule.outputs.instrumentationKey
+    appInsightsId: appInsightsModule.outputs.id
+    apimLoggerName: apimLoggerName
+  }
+  dependsOn: [
+    apim
+  ]
+}
+
