@@ -119,7 +119,7 @@ var environmentConfigurationMap = {
   }
 }
 
-// 0. Storage Account
+// Storage Account
 module storageModule './modules/storage/storage.bicep' = {
   name: 'storageModule'
   params: {
@@ -129,6 +129,7 @@ module storageModule './modules/storage/storage.bicep' = {
   }
 }
 
+// Key Vault
 module keyVaultModule './modules/key-vault/key-vault.bicep' = {
   name: 'keyvaultModule'
   params: {
@@ -138,7 +139,7 @@ module keyVaultModule './modules/key-vault/key-vault.bicep' = {
   }
 }
 
-// 1. Log Analytics Workspace
+// Log Analytics Workspace
 module logAnalyticsWorkspaceModule './modules/app-insights/log-analytics-workspace.bicep' = {
   name: 'logAnalyticsWorkspaceModule'
   params: {
@@ -147,7 +148,7 @@ module logAnalyticsWorkspaceModule './modules/app-insights/log-analytics-workspa
   }
 }
 
-// 2. Application Insights
+// Application Insights
 module appInsightsModule './modules/app-insights/app-insights.bicep' = {
   name: 'appInsightsModule'
   params: {
@@ -157,7 +158,7 @@ module appInsightsModule './modules/app-insights/app-insights.bicep' = {
   }
 }
 
-// 3. OpenAI service + Deployment
+// OpenAI service + Deployment
 module openAiModule 'modules/ai-services/openai.bicep' = {
   name: 'openAiModule'
   params: {
@@ -169,7 +170,7 @@ module openAiModule 'modules/ai-services/openai.bicep' = {
   }
 }
 
-// 4. ML Studio
+// ML Studio
 module mlStudioModule './modules/ml-studio/ml-studio.bicep' = {
   name: 'mlStudioModule'
   params: {
@@ -195,7 +196,7 @@ module mlModelModule './modules/ml-studio/ml-model.bicep' = {
   }
 }
 
-// 5. API Management + Connection to App Insights (logger)
+// API Management + Connection to App Insights (logger)
 module apim 'modules/apim/apim.bicep' = {
   name: 'apimModule'
   params: {
@@ -211,7 +212,7 @@ module apim 'modules/apim/apim.bicep' = {
   }
 }
 
-// 6. APIM OpenAI Endpoint
+// APIM OpenAI Endpoint
 module apimOpenAiEndpoint 'modules/apim/apis/api-openai.bicep' = {
   name: 'apimOpenAiEndpointModule'
   params: {
@@ -227,7 +228,7 @@ module apimOpenAiEndpoint 'modules/apim/apis/api-openai.bicep' = {
   ]
 }
 
-// 7. APIM Mock AI Search Endpoint
+// APIM Mock AI Search Endpoint
 module apimMockAiSearchEndpoint 'modules/apim/apis/api-mock-aisearch.bicep' = {
   name: 'apimMockAiSearchEndpointModule'
   params: {
@@ -245,7 +246,7 @@ module apimMockAiSearchEndpoint 'modules/apim/apis/api-mock-aisearch.bicep' = {
   ]
 }
 
-// 8. APIM ML Model Endpoint
+// APIM ML Model Endpoint
 module apimMLModelEndpoint 'modules/apim/apis/api-ml-model.bicep' = {
   name: 'apimMLModelEndpointModule'
   params: {
